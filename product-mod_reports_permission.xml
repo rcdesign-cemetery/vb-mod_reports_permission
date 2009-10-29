@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<product productid="mod_reports_permission" active="1">
+	<title>Report to Moderator Permissions</title>
+	<description><![CDATA[Personal group setting for "report to medorator" feature]]></description>
+	<version>0.1</version>
+	<url />
+	<versioncheckurl />
+	<apm_releasedate>0</apm_releasedate>
+	<apm_author />
+	<apm_relatedurl />
+	<apm_extrainfo />
+	<apm_extraedit />
+	<dependencies>
+	</dependencies>
+	<codes>
+		<code version="0.1">
+			<installcode><![CDATA[
+                                $db->query_write("ALTER TABLE " . TABLE_PREFIX . "usergroup ADD mod_reports_allow TINYINT NOT NULL DEFAULT '1'");
+			]]></installcode>
+			<uninstallcode><![CDATA[
+                                $db->query_write("ALTER TABLE " . TABLE_PREFIX . "usergroup DROP COLUMN mod_reports_allow");
+			]]></uninstallcode>
+		</code>
+	</codes>
+	<templates>
+	</templates>
+	<plugins>
+		<plugin active="1" executionorder="50">
+			<title>Display reports permissions</title>
+			<hookname>admin_usergroup_edit</hookname>
+			<phpcode><![CDATA[
+print_table_header($vbphrase['mod_reports_permission']);
+
+print_yes_no_row($vbphrase['mod_reports_allowed_for_this_group'],   'usergroup[mod_reports_allow]', $usergroup['mod_reports_allow']);
+
+print_table_break();
+print_column_style_code(array('width: 70%', 'width: 30%'));]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report link from album picture</title>
+			<hookname>album_picture</hookname>
+			<phpcode><![CDATA[
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report icon for blog comments</title>
+			<hookname>blog_comment_display_complete</hookname>
+			<phpcode><![CDATA[
+global $permissions;
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report link for social groups</title>
+			<hookname>group_messagebit_display_complete</hookname>
+			<phpcode><![CDATA[
+global $permissions;
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report link for picture comment</title>
+			<hookname>picture_commentbit_display_complete</hookname>
+			<phpcode><![CDATA[
+global $permissions;
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report icon</title>
+			<hookname>postbit_display_complete</hookname>
+			<phpcode><![CDATA[
+global $permissions;
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report icon for pm</title>
+			<hookname>private_complete</hookname>
+			<phpcode><![CDATA[
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Set no permissions</title>
+			<hookname>report_start</hookname>
+			<phpcode><![CDATA[
+if (!($permissions['mod_reports_allow']))
+{
+    print_no_permission();
+}]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Remove report icon for visitor message</title>
+			<hookname>visitor_messagebit_display_complete</hookname>
+			<phpcode><![CDATA[
+global $permissions;
+if ($show['reportlink'])
+{
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+}]]></phpcode>
+		</plugin>
+	</plugins>
+	<phrases>
+		<phrasetype name="Control Panel User Groups" fieldname="cpusergroup">
+			<phrase name="mod_reports_allowed_for_this_group" date="1256828794" username="Vitaly" version=""><![CDATA[Can report bad content to moderators / administrators]]></phrase>
+			<phrase name="mod_reports_permission" date="1256828692" username="Vitaly" version=""><![CDATA[Report to moderators permission]]></phrase>
+		</phrasetype>
+	</phrases>
+	<options>
+	</options>
+	<helptopics>
+	</helptopics>
+	<cronentries>
+	</cronentries>
+	<faqentries>
+	</faqentries>
+	<templateedits>
+	</templateedits>
+</product>
