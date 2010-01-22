@@ -4,8 +4,8 @@
 	<title>Report to Moderator Permissions</title>
 	<description><![CDATA[Personal group setting for "report to medorator" feature]]></description>
 	<version>0.2</version>
-	<url />
-	<versioncheckurl />
+	<url><![CDATA[http://www.vbulletin.org/forum/misc.php?do=producthelp&pid=mod_reports_permission]]></url>
+	<versioncheckurl><![CDATA[http://www.vbulletin.org/forum/misc.php?do=productcheck&pid=mod_reports_permission]]></versioncheckurl>
 	<apm_releasedate>0</apm_releasedate>
 	<apm_author />
 	<apm_relatedurl />
