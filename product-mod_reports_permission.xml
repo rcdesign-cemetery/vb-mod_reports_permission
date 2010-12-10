@@ -25,6 +25,10 @@
 	</codes>
 	<templates>
 	</templates>
+	<stylevardfns>
+	</stylevardfns>
+	<stylevars>
+	</stylevars>
 	<plugins>
 		<plugin active="1" executionorder="50">
 			<title>Display reports permissions</title>
@@ -40,69 +44,83 @@ print_column_style_code(array('width: 70%', 'width: 30%'));]]></phpcode>
 		<plugin active="1" executionorder="5">
 			<title>Remove report link from album picture</title>
 			<hookname>album_picture</hookname>
-			<phpcode><![CDATA[
-if ($show['reportlink'])
+			<phpcode><![CDATA[if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $pictureinfo['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
 			<title>Remove report icon for blog comments</title>
 			<hookname>blog_comment_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->bloginfo['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
 			<title>Remove report icon for blogs list</title>
 			<hookname>blog_entry_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
-  $show['reportlink'] = $permissions['mod_reports_allow'];
+    $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->blog['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
 			<title>Remove report link for social groups</title>
 			<hookname>group_messagebit_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->item['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
 			<title>Remove report link for picture comment</title>
 			<hookname>picture_commentbit_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->message['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
 			<title>Remove report icon</title>
 			<hookname>postbit_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
-}]]></phpcode>
-		</plugin>
-		<plugin active="1" executionorder="5">
-			<title>Remove report icon for pm</title>
-			<hookname>private_complete</hookname>
-			<phpcode><![CDATA[
-if ($show['reportlink'])
-{
-    $show['reportlink'] = $permissions['mod_reports_allow'];
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->post['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 		<plugin active="1" executionorder="5">
@@ -117,11 +135,15 @@ if (!($permissions['mod_reports_allow']))
 		<plugin active="1" executionorder="5">
 			<title>Remove report icon for visitor message</title>
 			<hookname>visitor_messagebit_display_complete</hookname>
-			<phpcode><![CDATA[
-global $permissions;
+			<phpcode><![CDATA[global $permissions;
 if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
+
+    if ($this->registry->options['rmp_item_days_old'] > 0 AND $this->message['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    {
+        $show['reportlink'] = false;
+    }
 }]]></phpcode>
 		</plugin>
 	</plugins>
@@ -130,8 +152,19 @@ if ($show['reportlink'])
 			<phrase name="mod_reports_allowed_for_this_group" date="1256828794" username="Vitaly" version=""><![CDATA[Can report bad content to moderators / administrators]]></phrase>
 			<phrase name="mod_reports_permission" date="1256828692" username="Vitaly" version=""><![CDATA[Report to moderators permission]]></phrase>
 		</phrasetype>
+		<phrasetype name="vBulletin Settings" fieldname="vbsettings">
+			<phrase name="setting_rmp_item_days_old_desc" date="1291946539" username="Vitaly" version="0.2"><![CDATA[This option disables reporting, if item (post, group message etc.) is older than X days. Set 0 to disable limit.]]></phrase>
+			<phrase name="setting_rmp_item_days_old_title" date="1291946539" username="Vitaly" version="0.2"><![CDATA[Disable reporting if item is X days old]]></phrase>
+			<phrase name="settinggroup_report_to_moderator" date="1291789389" username="admin" version="0.2"><![CDATA[Report to Moderator Permissions]]></phrase>
+		</phrasetype>
 	</phrases>
 	<options>
+		<settinggroup name="report_to_moderator" displayorder="65535">
+			<setting varname="rmp_item_days_old" displayorder="10">
+				<datatype>integer</datatype>
+				<defaultvalue>30</defaultvalue>
+			</setting>
+		</settinggroup>
 	</options>
 	<helptopics>
 	</helptopics>
