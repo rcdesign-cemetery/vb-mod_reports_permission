@@ -44,11 +44,12 @@ print_column_style_code(array('width: 70%', 'width: 30%'));]]></phpcode>
 		<plugin active="1" executionorder="5">
 			<title>Remove report link from album picture</title>
 			<hookname>album_picture</hookname>
-			<phpcode><![CDATA[if ($show['reportlink'])
+			<phpcode><![CDATA[global $vbulletin;
+if ($show['reportlink'])
 {
     $show['reportlink'] = $permissions['mod_reports_allow'];
 
-    if ($this->registry->options['rmp_item_days_old'] > 0 AND $pictureinfo['dateline'] < (TIMENOW - 24 * 60 * 60 * $this->registry->options['rmp_item_days_old']))
+    if ($vbulletin->options['rmp_item_days_old'] > 0 AND $pictureinfo['dateline'] < (TIMENOW - 24 * 60 * 60 * $vbulletin->options['rmp_item_days_old']))
     {
         $show['reportlink'] = false;
     }
